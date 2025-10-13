@@ -1,6 +1,6 @@
 <?php require_once('assets/php/conexao.php');
 $conn = conexao();
-$sql_usuario = "SELECT u.nome, u.fotoPerfil, u.matricula, GROUP_CONCAT(lp.nome ORDER BY lp.nome SEPARATOR ', ') as areas_orientador FROM usuario u 
+$sql_usuario = "SELECT u.idUsuario, u.nome, u.fotoPerfil, u.matricula, GROUP_CONCAT(lp.nome ORDER BY lp.nome SEPARATOR ', ') as areas_orientador FROM usuario u 
 LEFT JOIN areaestudo ae ON u.idUsuario = ae.idUsuario
 LEFT JOIN linhapesquisa lp ON ae.idLinhaPesquisa = lp.idLinhaPesquisa
 WHERE senha IS NOT NULL AND senha <> ''
@@ -72,7 +72,7 @@ $resultado = $conn->query($sql_usuario); ?>
               <?php if ($resultado && $resultado->num_rows > 0): ?>
                 <?php while ($orientadores = $resultado->fetch_assoc()): ?>
 
-                  <a href="telaPerfilOrientador.php?matricula=<?php echo htmlspecialchars($orientadores['matricula']); ?>"
+                  <a href="telaPerfilOrientador.php?id=<?php echo htmlspecialchars($orientadores['idUsuario']); ?>"
                     class="trabalho-clickable-link">
                     <div class="event-item" data-aos="fade-up">
                       <div class="event-content p-4">

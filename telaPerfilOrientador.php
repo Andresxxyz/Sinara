@@ -2,24 +2,24 @@
 require_once("assets/php/conexao.php");
 $conn = conexao();
 session_start();
-if (isset($_GET['matricula'])) {
-    $matricula = $_GET['matricula'];
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
 } else {
     echo "Erro: Nenhum orientador selecionado.";
 }
-$sql_usuario = "SELECT idUsuario, nome, emailInstitucional, linkCurriculo, sobre, fotoPerfil FROM usuario WHERE matricula = ?";
+$sql_usuario = "SELECT nome, emailInstitucional, linkCurriculo, sobre, fotoPerfil FROM usuario WHERE idUsuario = ?";
 $stmt_usuario = $conn->prepare($sql_usuario);
-$stmt_usuario->bind_param("s", $matricula);
+$stmt_usuario->bind_param("s", $id);
 $stmt_usuario->execute();
 $result_usuario = $stmt_usuario->get_result();
 $usuario = $result_usuario->fetch_assoc();
-$idUsuario = $usuario['idUsuario'];
+$idUsuario = $id;
 $stmt_usuario->close();
 $areas_de_estudo = [];
-$sql_areas = "SELECT lp.nome FROM Usuario u INNER JOIN areaEstudo ae ON u.idUsuario = ae.idUsuario INNER JOIN linhaPesquisa lp ON ae.idLinhaPesquisa = lp.idLinhaPesquisa WHERE u.matricula = ?";
+$sql_areas = "SELECT lp.nome FROM Usuario u INNER JOIN areaEstudo ae ON u.idUsuario = ae.idUsuario INNER JOIN linhaPesquisa lp ON ae.idLinhaPesquisa = lp.idLinhaPesquisa WHERE u.idUsuario = ?";
 $stmt_areas = $conn->prepare($sql_areas);
 if ($stmt_areas) {
-  $stmt_areas->bind_param("s", $matricula);
+  $stmt_areas->bind_param("s", $id);
   $stmt_areas->execute();
   $result_areas = $stmt_areas->get_result();
   while ($row = $result_areas->fetch_assoc()) {
@@ -759,10 +759,6 @@ $resultado_trabalhos = $stmt_trabalhos->get_result();
                     <div class="matriculaItems px-4">
                       <p class="titleProfile">Nome</p>
                       <p class="textProfile" id="nomeText"><?php echo htmlspecialchars($usuario['nome']); ?></p>
-                    </div>
-                    <div class="matriculaItems px-4">
-                      <p class="titleProfile">Matrícula</p>
-                      <p class="textProfile" id="textMatricula"><?php echo htmlspecialchars($matricula); ?></p>
                     </div>
                     <div class="areaItems px-4">
                       <p class="titleProfile">Área(s)</p>
