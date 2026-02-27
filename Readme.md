@@ -2,7 +2,7 @@
 
 > Uma plataforma web desenvolvida para centralizar, organizar e dar visibilidade aos projetos de pesquisa, ensino e extensão de estudantes e docentes.
 
-![Demonstração do Sinara](sinara.mp4)
+![Demonstração do Sinara](sinara.gif)
 
 ---
 
