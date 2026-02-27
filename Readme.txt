@@ -2,8 +2,7 @@
 
 > Uma plataforma web desenvolvida para centralizar, organizar e dar visibilidade aos projetos de pesquisa, ensino e extensão de estudantes e docentes.
 
-![Demonstração do Sinara](caminho_para_seu_gif_ou_print.gif)
-*(Sugestão: Converta o vídeo que você tem em um GIF e coloque o link aqui, ou adicione um print da tela inicial)*
+![Demonstração do Sinara](sinara.gif)
 
 ---
 
@@ -15,8 +14,8 @@ O Sinara atua como uma biblioteca digital, permitindo a publicação, busca estr
 
 ### 🚀 Principais Funcionalidades
 
-* **Busca Global Avançada:** Sistema de pesquisa inteligente que filtra dados em todos os campos (título, autor, palavras-chave, etc.).
-* **Filtros por Categoria:** Navegação simplificada por áreas do conhecimento e cursos (ex: Informática, Matemática, etc.).
+* **Busca Global Avançada:** Sistema de pesquisa inteligente que filtra dados em todos os campos.
+* **Filtros por Categoria:** Navegação simplificada por áreas do conhecimento e cursos.
 * **Gestão de Perfis:** Páginas dedicadas para orientadores e alunos, concentrando todas as suas publicações.
 * **Autenticação Segura:** Sistema de login e cadastro com módulos de recuperação de senha via e-mail.
 * **Upload e Visualização de Arquivos:** Submissão de trabalhos e recursos visuais para cada projeto.
@@ -45,5 +44,26 @@ Siga os passos abaixo para rodar o projeto em sua máquina:
 ### 2. Passo a Passo
 
 1. **Clone o repositório:**
-   ```bash
-   git clone [https://github.com/Andresxxyz/Sinara.git](https://github.com/Andresxxyz/Sinara.git)
+`git clone https://github.com/Andresxxyz/Sinara.git`
+
+2. **Mova para o servidor:**
+Copie a pasta clonada para dentro do diretório do seu servidor local (ex: `C:\xampp\htdocs\Sinara`).
+
+3. **Configuração do Banco de Dados:**
+* Abra o `phpMyAdmin` (ou seu gerenciador de banco de dados preferido).
+* Crie um banco de dados chamado `sinara`.
+* Importe o arquivo `database.sql` (encontrado na raiz deste repositório) para dentro do banco criado.
+* *Nota: O esquema de banco de dados utiliza o campo `AreaTrabalho` na modelagem.*
+
+4. **Acesse a aplicação:**
+Abra o seu navegador e acesse: `http://localhost/Sinara`
+
+---
+
+## 👨‍💻 Desenvolvedor
+
+**Rafael Andres da Silva** Estudante de Análise e Desenvolvimento de Sistemas (FIAP) | Técnico em Informática para Internet (IFSP)
+
+* [LinkedIn](https://linkedin.com/in/seu_usuario_aqui)
+* [GitHub](https://github.com/Andresxxyz)
+* [E-mail](mailto:rafaelandres910819@gmail.com)
