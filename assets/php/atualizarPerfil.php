@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt_update->execute();
         $stmt_update->close();
 
-        $sql_delete_areas = "DELETE FROM areaEstudo WHERE idUsuario = ?";
+        $sql_delete_areas = "DELETE FROM areaEstudoUsuario WHERE idUsuario = ?";
         $stmt_delete = $conn->prepare($sql_delete_areas);
         $stmt_delete->bind_param("i", $idUser);
         $stmt_delete->execute();
@@ -72,16 +72,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (isset($_POST['subject']) && is_array($_POST['subject'])) {
             $selected_subjects = $_POST['subject'];
-            $sql_insert_area = "INSERT INTO areaEstudo(idUsuario, idLinhaPesquisa) VALUES (?, ?)";
+            $sql_insert_area = "INSERT INTO areaEstudoUsuario(idUsuario, idAreaEstudo) VALUES (?, ?)";
             $stmt_insert = $conn->prepare($sql_insert_area);
             foreach ($selected_subjects as $subject_name) {
-                $sql_area_id = "SELECT idLinhaPesquisa FROM linhaPesquisa WHERE nome = ?";
+                $sql_area_id = "SELECT idAreaEstudo FROM areaEstudo WHERE nome = ?";
                 $stmt_area_id = $conn->prepare($sql_area_id);
                 $stmt_area_id->bind_param("s", $subject_name);
                 $stmt_area_id->execute();
                 $result_area = $stmt_area_id->get_result();
                 if ($row_area = $result_area->fetch_assoc()) {
-                    $idArea = $row_area['idLinhaPesquisa'];
+                    $idArea = $row_area['idAreaEstudo'];
                     $stmt_insert->bind_param("ii", $idUser, $idArea);
                     $stmt_insert->execute();
                 }

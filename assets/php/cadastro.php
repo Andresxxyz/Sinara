@@ -73,14 +73,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (isset($_POST['subject'])) {
                     $selected_subjects = $_POST['subject'];
                     foreach ($selected_subjects as $subject) {
-                        $sql_area = "SELECT idLinhaPesquisa FROM linhapesquisa WHERE nome = ?";
+                        $sql_area = "SELECT idAreaEstudo FROM AreaEstudo WHERE nome = ?";
                         $stmt_area = $conn->prepare($sql_area);
                         $stmt_area->bind_param("s", $subject);
                         $stmt_area->execute();
                         $result_area = $stmt_area->get_result();
                         $row = $result_area->fetch_assoc();
-                        $idArea = $row['idLinhaPesquisa'];
-                        $sql_insert = "INSERT INTO areaestudo(idUsuario, idLinhaPesquisa) VALUES (?, ?)";
+                        $idArea = $row['idAreaEstudo'];
+                        $sql_insert = "INSERT INTO areaestudoUsuario(idUsuario, idAreaEstudo) VALUES (?, ?)";
                         $stmt_insert = $conn->prepare($sql_insert);
                         $stmt_insert->bind_param("ii", $idUser, $idArea);
                         $stmt_insert->execute();

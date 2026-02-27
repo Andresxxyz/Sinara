@@ -1,12 +1,38 @@
 <?php require_once('assets/php/conexao.php');
 $conn = conexao();
-$sql_usuario = "SELECT u.nome, u.fotoPerfil, u.matricula, GROUP_CONCAT(lp.nome ORDER BY lp.nome SEPARATOR ', ') as areas_orientador FROM usuario u 
-LEFT JOIN areaestudo ae ON u.idUsuario = ae.idUsuario
-LEFT JOIN linhapesquisa lp ON ae.idLinhaPesquisa = lp.idLinhaPesquisa
-WHERE senha IS NOT NULL AND senha <> ''
-GROUP BY  u.idUsuario, u.nome, u.fotoPerfil, u.matricula
-ORDER BY nome ASC";
-$resultado = $conn->query($sql_usuario); ?>
+
+// ---- SUA CONSULTA ANTIGA (BUSCAVA ORIENTADORES) ----
+// $sql_usuario = "SELECT u.nome, u.fotoPerfil, u.matricula, GROUP_CONCAT(lp.nome ORDER BY lp.nome SEPARATOR ', ') as areas_orientador FROM usuario u 
+// LEFT JOIN areaestudo ae ON u.idUsuario = ae.idUsuario
+// LEFT JOIN linhapesquisa lp ON ae.idLinhaPesquisa = lp.idLinhaPesquisa
+// WHERE senha IS NOT NULL AND senha <> ''
+// GROUP BY  u.idUsuario, u.nome, u.fotoPerfil, u.matricula
+// ORDER BY nome ASC";
+
+// ---- NOVA CONSULTA (BUSCA PROJETOS) ----
+$sql_projetos = "SELECT 
+                    p.idProjeto,
+                    p.nomeProj,
+                    p.descricaoProj,
+                    p.urlLogo,
+                    u.nome AS nomeOrientador,
+                    u.matricula AS matriculaOrientador,
+                    GROUP_CONCAT(ae.nome ORDER BY ae.nome SEPARATOR ', ') AS areas_projeto
+                FROM 
+                    Projeto p
+                JOIN 
+                    Usuario u ON p.idUsuario = u.idUsuario
+                LEFT JOIN 
+                    ProjetoArea pa ON p.idProjeto = pa.idProjeto
+                LEFT JOIN 
+                    AreaEstudo ae ON pa.idAreaEstudo = ae.idAreaEstudo
+                GROUP BY 
+                    p.idProjeto, p.nomeProj, p.descricaoProj, p.urlLogo, u.nome, u.matricula
+                ORDER BY 
+                    p.nomeProj ASC";
+
+$resultado = $conn->query($sql_projetos); 
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,21 +41,16 @@ $resultado = $conn->query($sql_usuario); ?>
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Projetos</title>
   <meta name="description" content="">
-  <meta name="keywords" content=""> <!-- Favicons -->
-  <link href="assets/img/iconTab.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon"> <!-- Fonts -->
-  <link href="https://fonts.googleapis.com" rel="preconnect">
-  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <meta name="keywords" content=""> <link href="assets/img/iconTab.png" rel="icon">
+  <link href="assets.img/apple-touch-icon.png" rel="apple-touch-icon"> <link href="https.googleapis.com" rel="preconnect">
+  <link href="https.gstatic.com" rel="preconnect" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-    rel="stylesheet"> <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    rel="stylesheet"> <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet"> <!-- Main CSS File -->
-  <link href="assets/css/main.css" rel="stylesheet">
-  <!-- ======================================================= * Template Name: NiceSchool * Template URL: https://bootstrapmade.com/nice-school-bootstrap-education-template/ * Updated: May 10 2025 with Bootstrap v5.3.6 * Author: BootstrapMade.com * License: https://bootstrapmade.com/license/ ======================================================== -->
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet"> <link href="assets/css/main.css" rel="stylesheet">
   <style>
     .event-content {
       display: flex;
@@ -37,14 +58,15 @@ $resultado = $conn->query($sql_usuario); ?>
       gap: 50px;
     }
 
-    .imgOrientador {
+    .imgOrientador { /* Renomeei para imgProjeto, mas mantive o nome da classe antigo para compatibilidade */
       width: 80px;
       height: 80px;
       border-radius: 50%;
       object-fit: cover;
+      border: 2px solid #eee; /* Adiciona uma borda sutil */
     }
 
-    .nomeAreasOrientador{
+    .nomeAreasOrientador{ /* O nome da classe não é ideal, mas mantive */
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -63,33 +85,45 @@ $resultado = $conn->query($sql_usuario); ?>
       <h1>Projetos</h1>
     </div>
   </div>
-  <main class="main"> <!-- Page Title -->
-    <section id="events-2" class="events-2 section">
+  <main class="main"> <section id="events-2" class="events-2 section">
       <div class="container" data-aos="fade-up" data-aos-delay="100">
         <div class="row g-4">
           <div class="">
             <div class="events-list">
               <?php if ($resultado && $resultado->num_rows > 0): ?>
-                <?php while ($orientadores = $resultado->fetch_assoc()): ?>
+                <?php while ($projeto = $resultado->fetch_assoc()): ?>
+                  
+                  <?php
+                    // Define a imagem (logo do projeto ou padrão)
+                    $logoSrc = !empty($projeto['urlLogo']) 
+                               ? htmlspecialchars($projeto['urlLogo']) 
+                               : 'assets/img/projetoSemLogo.png'; // Crie esta imagem padrão
+                  ?>
 
-                  <a href="telaPerfilOrientador.php?matricula=<?php echo htmlspecialchars($orientadores['matricula']); ?>"
+                  <a href="perfilProjeto.php?id=<?php echo htmlspecialchars($projeto['idProjeto']); ?>"
                     class="trabalho-clickable-link">
                     <div class="event-item" data-aos="fade-up">
                       <div class="event-content p-4">
-                        <img src="<?php echo htmlspecialchars($orientadores['fotoPerfil']); ?>" class="imgOrientador"
-                          alt="Foto do Orientador">
+                        
+                        <img src="<?php echo $logoSrc; ?>" class="imgOrientador"
+                          alt="Logo do Projeto">
+                        
                           <div class="nomeAreasOrientador">
-                            <h3><?php echo htmlspecialchars($orientadores['nome']); ?></h3>
-                            <h3 style="font-size: 1.1rem">Área(s) de Estudo: <span style="color: #2d465eaa;"><?php echo htmlspecialchars($orientadores['areas_orientador']); ?></span></h3>
-                          </div>
-
-                        <p style="display: none;"><?php echo htmlspecialchars($orientadores['matricula']); ?></p>
-                      </div>
+                          
+                          <h3><?php echo htmlspecialchars($projeto['nomeProj']); ?></h3>
+                          
+                          <h3 style="font-size: 12px">Área(s) de Estudo: <span style="color: #2d465eaa;"><?php echo htmlspecialchars($projeto['areas_projeto'] ?? 'Nenhuma área definida'); ?></span></h3>
+                          
+                          <h3 style="font-size: 12px">Orientador: <span style="color: #2d465eaa;"><?php echo htmlspecialchars($projeto['nomeOrientador']); ?></span></h3>
+                        
+                        </div>
+                        
+                        </div>
                     </div>
                   </a>
                 <?php endwhile; ?>
               <?php else: ?>
-                <?php echo '<p class="text-center">Nenhum orientador cadastrado ainda.</p>'; ?>
+                <?php echo '<p class="text-center">Nenhum projeto cadastrado ainda.</p>'; ?>
               <?php endif; ?>
               <?php $conn->close(); ?>
             </div>
@@ -133,18 +167,13 @@ $resultado = $conn->query($sql_usuario); ?>
     </div>
     <div class="container copyright text-center mt-4">
       <p>© <span>Copyright</span> <strong class="px-1 sitename">MyWebsite</strong> <span>All Rights Reserved</span></p>
-      <div class="credits"> <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you've purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] --> Designed by <a
-          href="https://bootstrapmade.com/">BootstrapMade</a>
+      <div class="credits"> Designed by <a
+          href="https.bootstrapmade.com/">BootstrapMade</a>
       </div>
     </div>
-  </footer> <!-- Scroll Top --> <a href="#" id="scroll-top"
+  </footer> <a href="#" id="scroll-top"
     class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-  <!-- Preloader -->
-  <div id="preloader"></div> <!-- Vendor JS Files -->
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <div id="preloader"></div> <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/confirmarLogout.js"></script>
   <script src="assets/vendor/php-email-form/validate.js"></script>
   <script src="assets/vendor/aos/aos.js"></script>
@@ -152,8 +181,7 @@ $resultado = $conn->query($sql_usuario); ?>
   <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
   <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script> <!-- Main JS File -->
-  <script src="assets/js/main.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script> <script src="assets/js/main.js"></script>
   <script src="assets/js/paginacaoTrabalhos.js"></script>
   <script src="assets/js/modalTrabalho.js"></script>
 </body>

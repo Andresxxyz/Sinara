@@ -52,7 +52,7 @@ $resultado_trabalhos = $stmt_trabalhos->get_result();
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Meu Perfil</title>
+  <title>Meus Projetos</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
   <link href="assets/img/iconTab.png" rel="icon">
@@ -841,7 +841,7 @@ $resultado_trabalhos = $stmt_trabalhos->get_result();
   <main class="main">
     <div class="page-title dark-background">
       <div class="container position-relative">
-        <h1>Perfil</h1>
+        <h1>Meus Projetos</h1>
       </div>
     </div>
     <div class="perfilContainer">

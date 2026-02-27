@@ -1,8 +1,8 @@
 <?php require_once('assets/php/conexao.php');
 $conn = conexao();
-$sql_usuario = "SELECT u.idUsuario, u.nome, u.fotoPerfil, u.matricula, GROUP_CONCAT(lp.nome ORDER BY lp.nome SEPARATOR ', ') as areas_orientador FROM usuario u 
-LEFT JOIN areaestudo ae ON u.idUsuario = ae.idUsuario
-LEFT JOIN linhapesquisa lp ON ae.idLinhaPesquisa = lp.idLinhaPesquisa
+$sql_usuario = "SELECT u.idUsuario, u.nome, u.fotoPerfil, u.matricula, GROUP_CONCAT(ae.nome ORDER BY ae.nome SEPARATOR ', ') as areas_orientador FROM usuario u 
+LEFT JOIN areaestudousuario aeu ON u.idUsuario = aeu.idUsuario
+LEFT JOIN areaEstudo ae ON ae.idareaEstudo = aeu.idareaEstudo
 WHERE senha IS NOT NULL AND senha <> ''
 GROUP BY  u.idUsuario, u.nome, u.fotoPerfil, u.matricula
 ORDER BY nome ASC";

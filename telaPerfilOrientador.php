@@ -16,7 +16,7 @@ $usuario = $result_usuario->fetch_assoc();
 $idUsuario = $id;
 $stmt_usuario->close();
 $areas_de_estudo = [];
-$sql_areas = "SELECT lp.nome FROM Usuario u INNER JOIN areaEstudo ae ON u.idUsuario = ae.idUsuario INNER JOIN linhaPesquisa lp ON ae.idLinhaPesquisa = lp.idLinhaPesquisa WHERE u.idUsuario = ?";
+$sql_areas = "SELECT ae.nome FROM Usuario u INNER JOIN areaEstudoUsuario aeu ON u.idUsuario = aeu.idUsuario INNER JOIN areaEstudo ae ON aeu.idAreaEstudo = ae.idAreaEstudo WHERE u.idUsuario = ?";
 $stmt_areas = $conn->prepare($sql_areas);
 if ($stmt_areas) {
   $stmt_areas->bind_param("s", $id);
@@ -33,10 +33,10 @@ $sql_trabalhos = "
     SELECT 
         t.idTrabalho, t.titulo, t.idUsuario, t.nomePesquisador, t.dtPubli, t.anoTrab,
         t.palavrasChaves, t.resumo, t.abstract, t.arquivoTrabalho,
-        GROUP_CONCAT(lp.nome SEPARATOR ', ') as areas_de_estudo
+        GROUP_CONCAT(ae.nome SEPARATOR ', ') as areas_de_estudo
     FROM Trabalho t
     LEFT JOIN TrabalhoArea ta ON t.idTrabalho = ta.idTrabalho
-    LEFT JOIN LinhaPesquisa lp ON ta.idLinhaPesquisa = lp.idLinhaPesquisa
+    LEFT JOIN areaEstudo ae ON ta.idAreaEstudo = ae.idAreaEstudo
     WHERE t.idUsuario = ?
     GROUP BY t.idTrabalho
     ORDER BY t.dtPubli DESC;

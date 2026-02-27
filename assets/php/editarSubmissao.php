@@ -20,6 +20,7 @@ $resumo = $_POST['resumo'];
 $abstract = $_POST['abstract'];
 $selected_subjects = isset($_POST['subject']) ? $_POST['subject'] : [];
 $caminhoArquivoDB = $_POST['arquivo_existente'];
+$idProjeto = !empty($_POST['idProjeto']) ? (int)$_POST['idProjeto'] : null;
 
 $caminhoUploadServidor = null; 
 
@@ -62,11 +63,12 @@ try {
                                 palavrasChaves = ?, 
                                 resumo = ?, 
                                 abstract = ?, 
-                                arquivoTrabalho = ? 
+                                arquivoTrabalho = ?,
+                                idProjeto = ?
                             WHERE idTrabalho = ?";
     
     $stmt_update = $conn->prepare($sql_update_trabalho);
-    $stmt_update->bind_param("ssissssi", $titulo, $autores, $ano_trabalho, $palavras_chaves, $resumo, $abstract, $caminhoArquivoDB, $idTrabalho);
+    $stmt_update->bind_param("ssissssii", $titulo, $autores, $ano_trabalho, $palavras_chaves, $resumo, $abstract, $caminhoArquivoDB, $idProjeto, $idTrabalho);
     $stmt_update->execute();
     $stmt_update->close();
 
@@ -77,18 +79,18 @@ try {
     $stmt_delete->close();
 
     if (!empty($selected_subjects)) {
-        $sql_insert_area = "INSERT INTO TrabalhoArea(idTrabalho, idLinhaPesquisa) VALUES (?, ?)";
+        $sql_insert_area = "INSERT INTO TrabalhoArea(idTrabalho, idAreaEstudo) VALUES (?, ?)";
         $stmt_insert = $conn->prepare($sql_insert_area);
         
         foreach ($selected_subjects as $subject_name) {
-            $sql_area_id = "SELECT idLinhaPesquisa FROM linhaPesquisa WHERE nome = ?";
+            $sql_area_id = "SELECT idAreaEstudo FROM areaestudo WHERE nome = ?";
             $stmt_area_id = $conn->prepare($sql_area_id);
             $stmt_area_id->bind_param("s", $subject_name);
             $stmt_area_id->execute();
             $result_area = $stmt_area_id->get_result();
             
             if ($row_area = $result_area->fetch_assoc()) {
-                $idArea = $row_area['idLinhaPesquisa'];
+                $idArea = $row_area['idAreaEstudo'];
                 $stmt_insert->bind_param("ii", $idTrabalho, $idArea);
                 $stmt_insert->execute();
             }

@@ -15,13 +15,13 @@ $sql = "
         t.resumo,
         t.abstract,
         t.arquivoTrabalho,
-        GROUP_CONCAT(lp.nome SEPARATOR ', ') as areas_de_estudo 
+        GROUP_CONCAT(ae.nome SEPARATOR ', ') as areas_de_estudo 
     FROM 
         Trabalho t
     LEFT JOIN 
         TrabalhoArea ta ON t.idTrabalho = ta.idTrabalho
     LEFT JOIN 
-        LinhaPesquisa lp ON ta.idLinhaPesquisa = lp.idLinhaPesquisa
+        AreaEstudo ae ON ta.idAreaEstudo = ae.idAreaEstudo
     GROUP BY
         t.idTrabalho
     ORDER BY
