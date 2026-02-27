@@ -1,8 +1,9 @@
 <?php
     function conexao(){
-        return new mysqli("localhost", "root", "1234", "repositorio");
+        return new mysqli("localhost", "root", "", "sinara");
     }
     
     function fecharConexao($conn){
         $conn->close();
     }
+?>
