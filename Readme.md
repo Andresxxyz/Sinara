@@ -64,6 +64,6 @@ Abra o seu navegador e acesse: `http://localhost/Sinara`
 
 **Rafael Andres da Silva** Estudante de Análise e Desenvolvimento de Sistemas (FIAP) | Técnico em Informática para Internet (IFSP)
 
-* [LinkedIn](https://linkedin.com/in/seu_usuario_aqui)
+* [LinkedIn](https://www.linkedin.com/in/rafaandres/)
 * [GitHub](https://github.com/Andresxxyz)
 * [E-mail](mailto:rafaelandres910819@gmail.com)
