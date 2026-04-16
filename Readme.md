@@ -58,12 +58,3 @@ Copie a pasta clonada para dentro do diretório do seu servidor local (ex: `C:\x
 4. **Acesse a aplicação:**
 Abra o seu navegador e acesse: `http://localhost/Sinara`
 
----
-
-## 👨‍💻 Desenvolvedor
-
-**Rafael Andres da Silva** Estudante de Análise e Desenvolvimento de Sistemas (FIAP) | Técnico em Informática para Internet (IFSP)
-
-* [LinkedIn](https://www.linkedin.com/in/rafaandres/)
-* [GitHub](https://github.com/Andresxxyz)
-* [E-mail](mailto:rafaelandres910819@gmail.com)
